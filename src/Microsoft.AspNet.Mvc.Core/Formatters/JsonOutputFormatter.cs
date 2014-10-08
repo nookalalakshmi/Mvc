@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.HeaderValueAbstractions;
@@ -10,27 +11,33 @@ namespace Microsoft.AspNet.Mvc
 {
     public class JsonOutputFormatter : OutputFormatter
     {
-        private readonly JsonSerializerSettings _settings;
+        private JsonSerializerSettings _serializerSettings;
         
-        public JsonOutputFormatter([NotNull] JsonSerializerSettings settings)
+        public JsonOutputFormatter()
         {
-            _settings = settings;
             SupportedEncodings.Add(Encodings.UTF8EncodingWithoutBOM);
             SupportedEncodings.Add(Encodings.UTF16EncodingLittleEndian);
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/json"));
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("text/json"));
+
+            _serializerSettings = new JsonSerializerSettings();
         }
-
-        public static JsonSerializerSettings CreateDefaultSettings()
+        
+        /// <summary>
+        /// Gets or sets the <see cref="JsonSerializerSettings"/> used to configure the <see cref="JsonSerializer"/>.
+        /// </summary>
+        public JsonSerializerSettings SerializerSettings
         {
-            return new JsonSerializerSettings()
+            get { return _serializerSettings; }
+            set
             {
-                MissingMemberHandling = MissingMemberHandling.Ignore,
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
 
-                // Do not change this setting
-                // Setting this to None prevents Json.NET from loading malicious, unsafe, or security-sensitive types.
-                TypeNameHandling = TypeNameHandling.None
-            };
+                _serializerSettings = value;
+            }
         }
 
         public void WriteObject([NotNull] TextWriter writer, object value)
@@ -52,7 +59,7 @@ namespace Microsoft.AspNet.Mvc
 
         private JsonSerializer CreateJsonSerializer()
         {
-            var jsonSerializer = JsonSerializer.Create(_settings);
+            var jsonSerializer = JsonSerializer.Create(_serializerSettings);
             return jsonSerializer;
         }
 

@@ -1305,8 +1305,7 @@ namespace Microsoft.AspNet.Mvc
                                   .Returns(
                                         new List<IOutputFormatter>()
                                         {
-                                            new JsonOutputFormatter(
-                                                    JsonOutputFormatter.CreateDefaultSettings())
+                                            new JsonOutputFormatter()
                                         });
             httpContext.SetupGet(o => o.Request.Accept)
                        .Returns("");

@@ -15,7 +15,7 @@ namespace ConnegWebsite
             {
                 result.Formatters.Add(new PlainTextFormatter());
                 result.Formatters.Add(new CustomFormatter("application/custom"));
-                result.Formatters.Add(new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings()));
+                result.Formatters.Add(new JsonOutputFormatter());
             }
 
             base.OnActionExecuted(context);

@@ -17,9 +17,8 @@ namespace FormatterWebSite.Controllers
                 Name = "John Williams"
             };
 
-            var jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.Formatting = Formatting.Indented;
-            var jsonFrmtr = new JsonOutputFormatter(jsonSerializerSettings);
+            var jsonFrmtr = new JsonOutputFormatter();
+            jsonFrmtr.SerializerSettings.Formatting = Formatting.Indented;
 
             var objResult = new ObjectResult(user);
             objResult.Formatters.Add(jsonFrmtr);

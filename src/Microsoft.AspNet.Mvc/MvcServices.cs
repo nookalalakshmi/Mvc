@@ -90,8 +90,7 @@ namespace Microsoft.AspNet.Mvc
             yield return describe.Scoped<ICompositeValueProviderFactory, CompositeValueProviderFactory>();
             yield return describe.Transient<IOutputFormattersProvider, DefaultOutputFormattersProvider>();
 
-            yield return describe.Instance<JsonOutputFormatter>(
-                new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings()));
+            yield return describe.Instance<JsonOutputFormatter>(new JsonOutputFormatter());
 
             // The IGlobalFilterProvider is used to build the action descriptors (likely once) and so should
             // remain transient to avoid keeping it in memory.
