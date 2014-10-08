@@ -456,7 +456,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
                                         DeclaredType = nonStringValue.GetType()
                                     };
             var formatter = new JsonOutputFormatter();
-            formatter.WriteResponseContentHeaders(formatterContext);
+            formatter.WriteResponseHeaders(formatterContext);
             await formatter.WriteAsync(formatterContext);
 
             // Act
