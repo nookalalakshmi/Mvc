@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ConnegWebsite;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.TestHost;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Microsoft.AspNet.Mvc.FunctionalTests
@@ -46,7 +47,11 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
             var server = TestServer.Create(_provider, _app);
             var client = server.CreateClient();
             var expectedContentType = MediaTypeHeaderValue.Parse("application/json;charset=utf-8");
-            var expectedBody = "{\r\n  \"Name\": \"My name\",\r\n  \"Address\": \"My address\"\r\n}";
+
+            var user = new ConnegWebsite.User();
+            user.Name = "My name";
+            user.Address = "My address";
+            var expectedBody = JsonConvert.SerializeObject(user);
 
             // Act
             var response = await client.GetAsync("http://localhost/Normal/MultipleAllowedContentTypes");

@@ -78,7 +78,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
             result.Formatters = new List<IOutputFormatter>
                                             {
                                                 new CannotWriteFormatter(),
-                                                new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings(), false),
+                                                new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings()),
                                             };
 
             // Act
@@ -170,7 +170,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
             result.Formatters = new List<IOutputFormatter>
                                     {
                                         new CannotWriteFormatter(),
-                                        new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings(), false),
+                                        new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings()),
                                     };
             // Act
             await result.ExecuteResultAsync(actionContext);
@@ -202,7 +202,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
             result.Formatters = new List<IOutputFormatter>
                                         {
                                             mockFormatter.Object,
-                                            new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings(), false),
+                                            new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings()),
                                             new CannotWriteFormatter()
                                         };
             // Act
@@ -232,7 +232,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
             result.Formatters = new List<IOutputFormatter>
                                     {
                                         new CannotWriteFormatter(),
-                                        new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings(), false),
+                                        new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings()),
                                     };
 
             // Act
@@ -263,7 +263,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
             result.Formatters = new List<IOutputFormatter>
                                     {
                                         new CannotWriteFormatter(),
-                                        new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings(), false),
+                                        new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings()),
                                     };
             // Act
             await result.ExecuteResultAsync(actionContext);
@@ -364,7 +364,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
             result.Formatters = new List<IOutputFormatter>
                                     {
                                         new CannotWriteFormatter(),
-                                        new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings(), false),
+                                        new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings()),
                                     };
             // Act
             await result.ExecuteResultAsync(actionContext);
@@ -455,7 +455,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
                                         Object = nonStringValue,
                                         DeclaredType = nonStringValue.GetType()
                                     };
-            var formatter = new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings(), false);
+            var formatter = new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings());
             formatter.WriteResponseContentHeaders(formatterContext);
             await formatter.WriteAsync(formatterContext);
 
@@ -559,7 +559,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
                     return new List<IOutputFormatter>()
                         {
                             new TextPlainFormatter(),
-                            new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings(), indent: false)
+                            new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings())
                         };
                 }
             }

@@ -29,8 +29,7 @@ namespace ApiExplorer
 
                     options.OutputFormatters.Clear();
                     options.OutputFormatters.Add(new JsonOutputFormatter(
-                        JsonOutputFormatter.CreateDefaultSettings(), 
-                        indent: false));
+                        JsonOutputFormatter.CreateDefaultSettings()));
                     options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                 });
             });

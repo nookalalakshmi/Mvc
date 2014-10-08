@@ -11,12 +11,10 @@ namespace Microsoft.AspNet.Mvc
     public class JsonOutputFormatter : OutputFormatter
     {
         private readonly JsonSerializerSettings _settings;
-        private readonly bool _indent;
-
-        public JsonOutputFormatter([NotNull] JsonSerializerSettings settings, bool indent)
+        
+        public JsonOutputFormatter([NotNull] JsonSerializerSettings settings)
         {
             _settings = settings;
-            _indent = indent;
             SupportedEncodings.Add(Encodings.UTF8EncodingWithoutBOM);
             SupportedEncodings.Add(Encodings.UTF16EncodingLittleEndian);
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/json"));
@@ -47,11 +45,6 @@ namespace Microsoft.AspNet.Mvc
         private JsonWriter CreateJsonWriter(TextWriter writer)
         {
             var jsonWriter = new JsonTextWriter(writer);
-            if (_indent)
-            {
-                jsonWriter.Formatting = Formatting.Indented;
-            }
-
             jsonWriter.CloseOutput = false;
 
             return jsonWriter;

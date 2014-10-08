@@ -34,14 +34,9 @@ namespace Microsoft.AspNet.Mvc
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether to indent elements when writing data.
-        /// </summary>
-        public bool Indent { get; set; }
-
         public void Execute([NotNull] ViewComponentContext context)
         {
-            var formatter = new JsonOutputFormatter(SerializerSettings, Indent);
+            var formatter = new JsonOutputFormatter(SerializerSettings);
             formatter.WriteObject(context.Writer, Data);
         }
 

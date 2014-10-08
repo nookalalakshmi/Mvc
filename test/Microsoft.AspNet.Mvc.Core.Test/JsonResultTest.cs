@@ -21,8 +21,7 @@ namespace Microsoft.AspNet.Mvc
         private static readonly byte[] _abcdUTF8Bytes 
             = new byte[] { 123, 34, 102, 111, 111, 34, 58, 34, 97, 98, 99, 100, 34, 125 };
         private JsonOutputFormatter _jsonformatter = new JsonOutputFormatter(
-                                                            JsonOutputFormatter.CreateDefaultSettings(),
-                                                            indent: false);
+                                                            JsonOutputFormatter.CreateDefaultSettings());
         [Fact]
         public async Task ExecuteResult_GeneratesResultsWithoutBOMByDefault()
         {
@@ -129,8 +128,7 @@ namespace Microsoft.AspNet.Mvc
             {
                 // Override using the selected encoding.
                 context.SelectedEncoding = Encoding;
-                var jsonFormatter = new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings(),
-                                                            indent: false);
+                var jsonFormatter = new JsonOutputFormatter(JsonOutputFormatter.CreateDefaultSettings());
                 await jsonFormatter.WriteResponseBodyAsync(context);
             }
         }
