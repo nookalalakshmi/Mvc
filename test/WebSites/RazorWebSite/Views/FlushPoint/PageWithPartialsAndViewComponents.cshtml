@@ -6,8 +6,8 @@
 RenderBody content
 @section content
 {
+    @await FlushAsync()
     @{
-        await FlushAsync();
         WaitService.WaitForClient();
     }
     @await Component.InvokeAsync("ComponentThatSetsTitle")

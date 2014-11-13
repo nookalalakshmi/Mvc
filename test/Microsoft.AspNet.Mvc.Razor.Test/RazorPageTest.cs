@@ -98,10 +98,10 @@ namespace Microsoft.AspNet.Mvc.Razor
         {
             // Arrange
             var viewContext = CreateViewContext();
-            var page = CreatePage(v =>
+            var page = CreatePage(async v =>
             {
                 v.StartWritingScope();
-                v.FlushAsync();
+                await v.FlushAsync();
             });
 
             // Act
