@@ -260,6 +260,29 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
         }
 
         [Fact]
+        public async Task BindAttribute_Filters_UsingPropertyFilterProvider_UsingServices()
+        {
+            // Arrange
+            var server = TestServer.Create(_services, _app);
+            var client = server.CreateClient();
+
+            // Act
+            var response = await client.GetStringAsync("http://localhost/BindAttribute/" +
+                "EchoUserUsingServices" +
+                "?user.UserName=someValue&user.RegisterationMonth=March&user.Id=123");
+
+            // Assert
+            var json = JsonConvert.DeserializeObject<User>(response);
+
+            // Does not touch what is not in the included expression.
+            Assert.Equal(0, json.Id);
+
+            // Updates the included properties.
+            Assert.Equal("someValue", json.UserName);
+            Assert.Equal("March", json.RegisterationMonth);
+        }
+
+        [Fact]
         public async Task BindAttribute_Filters_UsingDefaultPropertyFilterProvider_WithPredicate()
         {
             // Arrange

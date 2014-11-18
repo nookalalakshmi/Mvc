@@ -9,7 +9,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNet.PipelineCore;
 using Microsoft.AspNet.Testing;
+using Microsoft.Framework.DependencyInjection;
 using Moq;
 using Xunit;
 
@@ -281,28 +283,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             Assert.Equal(expectedPropertyNames, returnedPropertyNames);
         }
 
-        [Bind(typeof(ExcludedProvider))]
-        private class TypeWithExcludedPropertiesUsingBindAttribute
-        {
-            public int Excluded1 { get; set; }
-
-            public int Excluded2 { get; set; }
-
-            public int IncludedByDefault1 { get; set; }
-            public int IncludedByDefault2 { get; set; }
-        }
-
-        public class ExcludedProvider : IModelPropertyFilterProvider
-        {
-            public Func<ModelBindingContext, string, bool> PropertyFilter
-            {
-                get
-                {
-                    return (context, propertyName) => !string.Equals("Excluded1", propertyName, StringComparison.OrdinalIgnoreCase) && !string.Equals("Excluded2", propertyName, StringComparison.OrdinalIgnoreCase);
-                }
-            }
-        }
-
         [Fact]
         public void GetMetadataForProperties_DoesNotReturn_ExcludedProperties()
         {
@@ -312,7 +292,11 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             {
                 ModelMetadata = GetMetadataForType(typeof(TypeWithExcludedPropertiesUsingBindAttribute)),
                 ValidatorProvider = Mock.Of<IModelValidatorProvider>(),
-                MetadataProvider = new DataAnnotationsModelMetadataProvider()
+                MetadataProvider = new DataAnnotationsModelMetadataProvider(),
+                HttpContext = new DefaultHttpContext
+                {
+                    RequestServices = CreateServices()
+                },
             };
 
             var testableBinder = new TestableMutableObjectModelBinder();
@@ -323,18 +307,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             // Assert
             Assert.Equal(expectedPropertyNames, returnedPropertyNames);
-        }
-
-        [Bind(Include = nameof(IncludedExplicitly1) + "," + nameof(IncludedExplicitly2))]
-        private class TypeWithIncludedPropertiesUsingBindAttribute
-        {
-            public int ExcludedByDefault1 { get; set; }
-
-            public int ExcludedByDefault2 { get; set; }
-
-            public int IncludedExplicitly1 { get; set; }
-
-            public int IncludedExplicitly2 { get; set; }
         }
 
         [Fact]
@@ -1042,6 +1014,58 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 get { return null; }
                 set { throw new ArgumentException("This is a different exception.", "value"); }
             }
+        }
+
+        [Bind(Include = nameof(IncludedExplicitly1) + "," + nameof(IncludedExplicitly2))]
+        private class TypeWithIncludedPropertiesUsingBindAttribute
+        {
+            public int ExcludedByDefault1 { get; set; }
+
+            public int ExcludedByDefault2 { get; set; }
+
+            public int IncludedExplicitly1 { get; set; }
+
+            public int IncludedExplicitly2 { get; set; }
+        }
+
+        [Bind(typeof(ExcludedProvider))]
+        private class TypeWithExcludedPropertiesUsingBindAttribute
+        {
+            public int Excluded1 { get; set; }
+
+            public int Excluded2 { get; set; }
+
+            public int IncludedByDefault1 { get; set; }
+            public int IncludedByDefault2 { get; set; }
+        }
+
+        public class ExcludedProvider : IModelPropertyFilterProvider
+        {
+            public Func<ModelBindingContext, string, bool> PropertyFilter
+            {
+                get
+                {
+                    return (context, propertyName) =>
+                       !string.Equals("Excluded1", propertyName, StringComparison.OrdinalIgnoreCase) &&
+                       !string.Equals("Excluded2", propertyName, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+        }
+
+        private IServiceProvider CreateServices()
+        {
+            var services = new Mock<IServiceProvider>(MockBehavior.Strict);
+
+            var typeActivator = new Mock<ITypeActivator>(MockBehavior.Strict);
+            typeActivator
+                .Setup(f => f.CreateInstance(It.IsAny<IServiceProvider>(), typeof(ExcludedProvider)))
+                .Returns(new ExcludedProvider());
+
+            services
+                .Setup(s => s.GetRequiredService(typeof(ITypeActivator)))
+                .Returns(typeActivator.Object);
+
+            return services.Object;
         }
 
         public class TestableMutableObjectModelBinder : MutableObjectModelBinder

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.ModelBinding.Internal;
+using Microsoft.Framework.DependencyInjection;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding
 {
@@ -164,30 +165,46 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         protected virtual IEnumerable<ModelMetadata> GetMetadataForProperties(ModelBindingContext bindingContext)
         {
             var validationInfo = GetPropertyValidationInfo(bindingContext);
-            var newPropertyFilter = GetPropertyFilter(bindingContext);
+            var newPropertyFilter = GetPropertyFilter();
             return bindingContext.ModelMetadata.Properties
                                  .Where(propertyMetadata =>
-                                    newPropertyFilter(propertyMetadata.PropertyName) &&
+                                    newPropertyFilter(bindingContext, propertyMetadata.PropertyName) &&
                                     (validationInfo.RequiredProperties.Contains(propertyMetadata.PropertyName) ||
                                     !validationInfo.SkipProperties.Contains(propertyMetadata.PropertyName)) &&
                                     CanUpdateProperty(propertyMetadata));
         }
 
-        private static Func<string, bool> GetPropertyFilter(ModelBindingContext bindingContext)
+        private static Func<ModelBindingContext, string, bool> GetPropertyFilter()
         {
-            var propertyTypeMetadata = bindingContext.MetadataProvider
-                                                     .GetMetadataForType(null, bindingContext.ModelType);
-            var propertyFilterType = propertyTypeMetadata.PropertyFilterProviderType;
-            Func<string, bool> newPropertyFilter =
-                propertyName => 
-                    bindingContext.PropertyFilter(bindingContext, propertyName) &&                               
-                    BindAttribute.IsPropertyAllowed(
-                                    propertyName,
-                                    propertyTypeMetadata.IncludedProperties) &&
-                    (propertyFilterType == null ||
-                        ((IModelPropertyFilterProvider)Activator.CreateInstance(propertyFilterType))
-                                .PropertyFilter(bindingContext, propertyName));
-            return newPropertyFilter;
+            Func<ModelBindingContext, string, bool> propertyFilter =
+                (context, propertyName) =>
+                {
+                    // The reason we need to get the metadata again and not use the one that is passed is the 
+                    // passed in metadata might represent a model metadata for a parameter which does not include
+                    // attributes on the type. TODO: This should get cleaned up as part of #1578.
+                    var containerMetadata = context.MetadataProvider.GetMetadataForType(null, context.ModelType);
+                    if (context.PropertyFilter(context, propertyName) && 
+                        BindAttribute.IsPropertyAllowed(propertyName, containerMetadata.IncludedProperties))
+                    {
+                        // Context always represents the container of the property and not the property iteself.
+                        var propertyFilterType = containerMetadata.PropertyFilterProviderType;
+                        if (propertyFilterType != null)
+                        {
+                            var requestServices = context.HttpContext.RequestServices;
+                            var typeActivator = requestServices.GetRequiredService<ITypeActivator>();
+                            var propertyFilterProvider =
+                                 (IModelPropertyFilterProvider)typeActivator.CreateInstance(requestServices,
+                                                                                            propertyFilterType);
+                            return propertyFilterProvider.PropertyFilter(context, propertyName);
+                        }
+
+                        return true;
+                    }
+
+                    return false;
+                };
+
+            return propertyFilter;
         }
 
         private static object GetPropertyDefaultValue(PropertyInfo propertyInfo)

@@ -23,6 +23,8 @@ namespace ModelBindingWebSite
                         {
                             m.MaxModelValidationErrors = 8;
                         });
+
+                services.AddSingleton<ITestService, TestService>();
             });
 
             // Add MVC to the request pipeline

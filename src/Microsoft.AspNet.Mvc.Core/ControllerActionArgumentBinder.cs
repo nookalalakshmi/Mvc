@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.Core;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.Framework.DependencyInjection;
 
 namespace Microsoft.AspNet.Mvc
 {
@@ -17,10 +18,13 @@ namespace Microsoft.AspNet.Mvc
     public class DefaultControllerActionArgumentBinder : IControllerActionArgumentBinder
     {
         private readonly IActionBindingContextProvider _bindingContextProvider;
+        private readonly ITypeActivator _typeActivator;
 
-        public DefaultControllerActionArgumentBinder(IActionBindingContextProvider bindingContextProvider)
+        public DefaultControllerActionArgumentBinder(IActionBindingContextProvider bindingContextProvider, 
+                                                     ITypeActivator typeActivator)
         {
             _bindingContextProvider = bindingContextProvider;
+            _typeActivator = typeActivator;
         }
 
         public async Task<IDictionary<string, object>> GetActionArgumentsAsync(ActionContext actionContext)
@@ -83,15 +87,30 @@ namespace Microsoft.AspNet.Mvc
             }
         }
 
-        internal static ModelBindingContext GetModelBindingContext(ModelMetadata modelMetadata, ActionBindingContext actionBindingContext)
+        internal static ModelBindingContext GetModelBindingContext(ModelMetadata modelMetadata,
+                                                                   ActionBindingContext actionBindingContext)
         {
-            var propertyFilterType = modelMetadata.PropertyFilterProviderType;
             Func<ModelBindingContext, string, bool> propertyFilter =
-                (context, propertyName) 
-                   => BindAttribute.IsPropertyAllowed(propertyName, modelMetadata.IncludedProperties) &&
-                     (propertyFilterType == null || 
-                      ((IModelPropertyFilterProvider)Activator.CreateInstance(propertyFilterType))
-                        .PropertyFilter(context, propertyName));
+                (context, propertyName) =>
+                {
+                    if (BindAttribute.IsPropertyAllowed(propertyName, context.ModelMetadata.IncludedProperties))
+                    {
+                        var propertyFilterType = context.ModelMetadata.PropertyFilterProviderType;
+                        if (propertyFilterType != null)
+                        {
+                            var requestServices = context.HttpContext.RequestServices;
+                            var typeActivator = requestServices.GetService<ITypeActivator>();
+                            var propertyFilterProvider = 
+                                 (IModelPropertyFilterProvider)typeActivator.CreateInstance(requestServices,
+                                                                                            propertyFilterType);
+                            return propertyFilterProvider.PropertyFilter(context, propertyName);
+                        }
+
+                        return true;
+                    }
+
+                    return false;
+                };
 
             var modelBindingContext = new ModelBindingContext
             {

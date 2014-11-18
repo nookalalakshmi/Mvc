@@ -11,27 +11,12 @@ namespace ModelBindingWebSite.Controllers
 {
     public class BindAttributeController : Controller
     {
-        private class ExcludeUserPropertiesAtParameter : DefaultModelPropertyFilterProvider<User>
+        public User EchoUser([Bind(typeof(ExcludeUserPropertiesAtParameter))] User user)
         {
-            public override string Prefix
-            {
-                get
-                {
-                    return "user";
-                }
-            }
-
-            public override IEnumerable<Expression<Func<User, object>>> PropertyIncludeExpressions
-            {
-                get
-                {
-                    yield return m => m.RegisterationMonth;
-                    yield return m => m.UserName;
-                }
-            }
+            return user;
         }
 
-        public User EchoUser([Bind(typeof(ExcludeUserPropertiesAtParameter))] User user)
+        public User EchoUserUsingServices([Bind(typeof(ExcludeUserPropertiesUsingService))] User user)
         {
             return user;
         }
@@ -84,6 +69,49 @@ namespace ModelBindingWebSite.Controllers
         {
             return param.Value;
         }
+
+        private class ExcludeUserPropertiesAtParameter : DefaultModelPropertyFilterProvider<User>
+        {
+            public override string Prefix
+            {
+                get
+                {
+                    return "user";
+                }
+            }
+
+            public override IEnumerable<Expression<Func<User, object>>> PropertyIncludeExpressions
+            {
+                get
+                {
+                    yield return m => m.RegisterationMonth;
+                    yield return m => m.UserName;
+                }
+            }
+        }
+
+        private class ExcludeUserPropertiesUsingService : ExcludeUserPropertiesAtParameter
+        {
+            private ITestService _testService;
+
+            public ExcludeUserPropertiesUsingService(ITestService testService)
+            {
+                _testService = testService;
+            }
+
+            public override IEnumerable<Expression<Func<User, object>>> PropertyIncludeExpressions
+            {
+                get
+                {
+                    if (_testService.Test())
+                    {
+                        return base.PropertyIncludeExpressions;
+                    }
+
+                    return null;
+                }
+            }
+        }
     }
 
     [Bind(Prefix = "TypePrefix")]
@@ -115,7 +143,8 @@ namespace ModelBindingWebSite.Controllers
         {
             get
             {
-                return (context, propertyName) => !string.Equals("LastName", propertyName, StringComparison.OrdinalIgnoreCase);
+                return (context, propertyName) => 
+                    !string.Equals("LastName", propertyName, StringComparison.OrdinalIgnoreCase);
             }
         }
     }
