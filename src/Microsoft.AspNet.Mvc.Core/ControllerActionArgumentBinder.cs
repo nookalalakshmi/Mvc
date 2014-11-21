@@ -18,13 +18,10 @@ namespace Microsoft.AspNet.Mvc
     public class DefaultControllerActionArgumentBinder : IControllerActionArgumentBinder
     {
         private readonly IActionBindingContextProvider _bindingContextProvider;
-        private readonly ITypeActivator _typeActivator;
 
-        public DefaultControllerActionArgumentBinder(IActionBindingContextProvider bindingContextProvider, 
-                                                     ITypeActivator typeActivator)
+        public DefaultControllerActionArgumentBinder(IActionBindingContextProvider bindingContextProvider)
         {
             _bindingContextProvider = bindingContextProvider;
-            _typeActivator = typeActivator;
         }
 
         public async Task<IDictionary<string, object>> GetActionArgumentsAsync(ActionContext actionContext)

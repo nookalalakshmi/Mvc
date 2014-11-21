@@ -41,10 +41,8 @@ namespace Microsoft.AspNet.Mvc
         /// <inheritdoc />
         public Type PropertyFilterProviderType { get; }
 
-        /// <summary>
-        /// Comma separated set of properties which are to be included during model binding.
-        /// </summary>
-        public string Include { get; set; } = string.Empty;
+        /// <inheritdoc />
+        public string[] Include { get; set; }
 
         // This property is exposed for back compat reasons.
         /// <summary>

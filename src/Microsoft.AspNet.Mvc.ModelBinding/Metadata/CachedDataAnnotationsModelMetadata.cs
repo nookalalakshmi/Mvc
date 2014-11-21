@@ -298,7 +298,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 return;
             }
 
-            IncludedProperties = SplitString(bindAttribute.Include).ToList();
+            IncludedProperties = bindAttribute.Include;
             PropertyFilterProviderType = bindAttribute.PropertyFilterProviderType;
         }
 

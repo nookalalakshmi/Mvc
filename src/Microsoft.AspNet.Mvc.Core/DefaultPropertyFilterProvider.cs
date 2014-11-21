@@ -59,11 +59,8 @@ namespace Microsoft.AspNet.Mvc
 
         private Func<ModelBindingContext, string, bool> GetPredicateFromExpression(IEnumerable<Expression<Func<TModel, object>>> includeExpressions)
         {
-            var includePredicates = ModelBindingHelper.GetIncludePredicates(Prefix, includeExpressions).ToArray();
-            Func<ModelBindingContext, string, bool> predicate =
-                (bindingContext, modelName) =>
-                    includePredicates.Any(includePredicate => includePredicate(bindingContext, modelName));
-            return predicate;
+            var expression = ModelBindingHelper.GetIncludePredicateExpression(Prefix, includeExpressions.ToArray());
+            return expression.Compile();
         }
     }
 }

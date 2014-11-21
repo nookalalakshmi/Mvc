@@ -24,7 +24,7 @@ namespace ModelBindingWebSite.Controllers
         public Dictionary<string, string>
            UpdateUserId_BlackListingAtEitherLevelDoesNotBind(
             [Bind(typeof(ExcludeLastName))] User2 param1,
-            [Bind(Include = "Id")] User2 param2)
+            [Bind(Include = new[] { "Id" })] User2 param2)
         {
             return new Dictionary<string, string>()
             {
@@ -37,7 +37,7 @@ namespace ModelBindingWebSite.Controllers
         }
 
         public Dictionary<string, string> UpdateFirstName_WhiteListingAtBothLevelBinds(
-            [Bind(Include = "FirstName")] User2 param1)
+            [Bind(Include = new[] { "FirstName" })] User2 param1)
         {
             return new Dictionary<string, string>()
             {
@@ -47,7 +47,7 @@ namespace ModelBindingWebSite.Controllers
         }
 
         public Dictionary<string, string> UpdateIsAdmin_WhiteListingAtOnlyOneLevelDoesNotBind(
-          [Bind(Include = "IsAdmin")] User2 param1)
+          [Bind(Include = new[] { "IsAdmin" })] User2 param1)
         {
             return new Dictionary<string, string>()
             {
@@ -125,7 +125,7 @@ namespace ModelBindingWebSite.Controllers
         public string Value { get; set; }
     }
 
-    [Bind(Include = nameof(FirstName) + "," + nameof(LastName))]
+    [Bind(Include = new[] { nameof(FirstName), nameof(LastName) })]
     public class User2
     {
         public int Id { get; set; }

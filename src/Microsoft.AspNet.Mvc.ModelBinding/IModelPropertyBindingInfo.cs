@@ -11,9 +11,9 @@ namespace Microsoft.AspNet.Mvc
     public interface IModelPropertyBindingInfo
     {
         /// <summary>
-        /// Comma separated set of properties which are to be included during model binding.
+        /// An array of properties which are to be included during model binding.
         /// </summary>
-        string Include { get; }
+        string[] Include { get; }
 
         /// <summary>
         /// Gets a type which derives from <see cref="IModelPropertyFilterProvider"/>.

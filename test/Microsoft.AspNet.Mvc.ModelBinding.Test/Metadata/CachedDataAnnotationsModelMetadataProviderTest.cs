@@ -22,13 +22,14 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             var metadata = provider.GetMetadataForType(null, type);
 
             // Assert
-            Assert.Equal(expectedIncludedPropertyNames.ToList(), metadata.IncludedProperties);
+            Assert.Equal(expectedIncludedPropertyNames, metadata.IncludedProperties);
             Assert.Equal(typeof(ExcludePropertiesAtType), metadata.PropertyFilterProviderType);
         }
 #if ASPNET50
 
         [Fact]
-        public void ModelMetadataProvider_ReadsIncludedAndPropertyFilterProviderType_OnlyAtParameterLevel_ForParameters()
+        public void 
+            ModelMetadataProvider_ReadsIncludedAndPropertyFilterProviderType_OnlyAtParameterLevel_ForParameters()
         {
             // Arrange
             var type = typeof(User);
@@ -46,7 +47,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 binderMetadata: null);
 
             // Assert
-            Assert.Equal(expectedIncludedPropertyNames.ToList(), metadata.IncludedProperties);
+            Assert.Equal(expectedIncludedPropertyNames, metadata.IncludedProperties);
             Assert.Equal(typeof(ExcludePropertiesAtParameter), metadata.PropertyFilterProviderType);
         }
 
@@ -185,7 +186,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             public HiddenClass OfHiddenType { get; set; }
         }
 
-        [Bind(typeof(ExcludePropertiesAtType), Include = nameof(IsAdmin) + "," + nameof(UserName),
+        [Bind(typeof(ExcludePropertiesAtType), Include = new[] { nameof(IsAdmin), nameof(UserName) },
              Prefix = "TypePrefix")]
         private class User
         {
@@ -199,7 +200,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             public void ActionWithBindAttribute(
                           [Bind(typeof(ExcludePropertiesAtParameter) ,
-                                Include = "Property1, Property2,IsAdmin",
+                                Include = new[] { "Property1", "Property2", "IsAdmin" },
                                 Prefix = "ParameterPrefix")]
                             User param)
             {

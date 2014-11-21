@@ -1016,7 +1016,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             }
         }
 
-        [Bind(Include = nameof(IncludedExplicitly1) + "," + nameof(IncludedExplicitly2))]
+        [Bind(Include = new[] { nameof(IncludedExplicitly1), nameof(IncludedExplicitly2) })]
         private class TypeWithIncludedPropertiesUsingBindAttribute
         {
             public int ExcludedByDefault1 { get; set; }
@@ -1062,7 +1062,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 .Returns(new ExcludedProvider());
 
             services
-                .Setup(s => s.GetRequiredService(typeof(ITypeActivator)))
+                .Setup(s => s.GetService(typeof(ITypeActivator)))
                 .Returns(typeActivator.Object);
 
             return services.Object;
