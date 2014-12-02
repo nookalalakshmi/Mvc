@@ -453,9 +453,9 @@ namespace Microsoft.AspNet.Mvc
         /// </remarks>
         private struct FilterCursor
         {
+            private readonly IFilter[] _filters;
             private FilterStage _stage;
             private int _index;
-            private readonly IFilter[] _filters;
 
             public FilterCursor(FilterStage stage, int index, IFilter[] filters)
             {

@@ -17,7 +17,8 @@ namespace Microsoft.AspNet.Mvc
         /// that excludes the properties of the <see cref="Type"/> specified and it's derived types from validaton.
         /// </summary>
         /// <param name="excludeBodyValidationDescriptorCollection">A list of <see cref="ExcludeValidationDescriptor"/>
-        /// which are used to get a collection of exclude filters to be applied for filtering model properties during validation.
+        /// which are used to get a collection of exclude filters to be applied for filtering model properties during
+        /// validation.
         /// </param>
         /// <param name="type"><see cref="Type"/> which should be excluded from validation.</param>
         public static void Add(this IList<ExcludeValidationDescriptor> excludeBodyValidationDescriptorCollection,
@@ -32,7 +33,8 @@ namespace Microsoft.AspNet.Mvc
         /// that excludes the properties of the type specified and it's derived types from validaton.
         /// </summary>
         /// <param name="excludeBodyValidationDescriptorCollection">A list of <see cref="ExcludeValidationDescriptor"/>
-        /// which are used to get a collection of exclude filters to be applied for filtering model properties during validation.
+        /// which are used to get a collection of exclude filters to be applied for filtering model properties during
+        /// validation.
         /// </param>
         /// <param name="typeFullName">Full name of the type which should be excluded from validation.</param>
         public static void Add(this IList<ExcludeValidationDescriptor> excludeBodyValidationDescriptorCollection,

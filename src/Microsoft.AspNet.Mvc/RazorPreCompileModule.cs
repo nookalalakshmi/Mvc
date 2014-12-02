@@ -45,7 +45,9 @@ namespace Microsoft.AspNet.Mvc
         }
 
         // TODO: KILL THIS
-        private static IServiceProvider BuildFallbackServiceProvider(IEnumerable<IServiceDescriptor> services, IServiceProvider fallback)
+        private static IServiceProvider BuildFallbackServiceProvider(
+            IEnumerable<IServiceDescriptor> services,
+            IServiceProvider fallback)
         {
             var sc = HostingServices.Create(fallback);
             sc.Add(services);
@@ -55,7 +57,8 @@ namespace Microsoft.AspNet.Mvc
                     && t.ServiceType != typeof(IServiceManifest)
                     && t.ServiceType != typeof(IServiceProvider))
                     .Select(t => t.ServiceType).Distinct();
-            sc.AddInstance<IServiceManifest>(new ServiceManifest(manifestTypes, fallback.GetRequiredService<IServiceManifest>()));
+            sc.AddInstance<IServiceManifest>(
+                new ServiceManifest(manifestTypes, fallback.GetRequiredService<IServiceManifest>()));
             return sc.BuildServiceProvider();
         }
 
@@ -72,24 +75,5 @@ namespace Microsoft.AspNet.Mvc
 
             public IEnumerable<Type> Services { get; private set; }
         }
-    }
-}
-
-namespace Microsoft.Framework.Runtime
-{
-    [AssemblyNeutral]
-    public interface ICompileModule
-    {
-        void BeforeCompile(IBeforeCompileContext context);
-
-        void AfterCompile(IAfterCompileContext context);
-    }
-
-    [AssemblyNeutral]
-    public interface IAfterCompileContext
-    {
-        CSharpCompilation CSharpCompilation { get; set; }
-
-        IList<Diagnostic> Diagnostics { get; }
     }
 }

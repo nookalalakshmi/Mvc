@@ -23,13 +23,13 @@ namespace Microsoft.AspNet.Mvc.Rendering.Expressions
 
         private static class Compiler<TIn, TOut>
         {
-            private static Func<TIn, TOut> _identityFunc;
-
             private static readonly ConcurrentDictionary<MemberInfo, Func<TIn, TOut>> _simpleMemberAccessDict =
                 new ConcurrentDictionary<MemberInfo, Func<TIn, TOut>>();
 
             private static readonly ConcurrentDictionary<MemberInfo, Func<object, TOut>> _constMemberAccessDict =
                 new ConcurrentDictionary<MemberInfo, Func<object, TOut>>();
+
+            private static Func<TIn, TOut> _identityFunc;
 
             public static Func<TIn, TOut> Compile([NotNull] Expression<Func<TIn, TOut>> expr)
             {

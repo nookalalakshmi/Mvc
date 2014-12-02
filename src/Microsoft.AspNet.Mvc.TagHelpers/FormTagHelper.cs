@@ -55,8 +55,7 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
         /// <remarks>Does nothing if <see cref="Action"/> contains a '/'.</remarks>
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            bool antiForgeryDefault = true;
-
+            var antiForgeryDefault = true;
             var routePrefixedAttributes = output.FindPrefixedAttributes(RouteAttributePrefix);
 
             // If Action contains a '/' it means the user is attempting to use the FormTagHelper as a normal form.
@@ -77,7 +76,8 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
                 // not force the anti-forgery token onto the user.
                 antiForgeryDefault = false;
 
-                // Restore Action, Method and Route HTML attributes if they were provided, user wants non-TagHelper <form>.
+                // Restore Action, Method and Route HTML attributes if they were provided, user wants non-TagHelper
+                // <form>.
                 output.CopyHtmlAttribute(nameof(Action), context);
 
                 if (Method != null)

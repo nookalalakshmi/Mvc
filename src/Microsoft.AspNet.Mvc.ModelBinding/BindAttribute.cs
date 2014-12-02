@@ -23,10 +23,10 @@ namespace Microsoft.AspNet.Mvc
         /// </summary>
         public string Include { get; set; } = string.Empty;
 
-        // This property is exposed for back compat reasons.
         /// <summary>
         /// Allows a user to specify a particular prefix to match during model binding.
         /// </summary>
+        // This property is exposed for back compat reasons.
         public string Prefix { get; set; }
 
         /// <summary>

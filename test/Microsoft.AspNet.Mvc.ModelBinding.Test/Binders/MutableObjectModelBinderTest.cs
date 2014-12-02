@@ -22,7 +22,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         [InlineData(typeof(Person), false)]
         [InlineData(typeof(EmptyModel), true)]
         [InlineData(typeof(EmptyModel), false)]
-        public async Task 
+        public async Task
             CanCreateModel_CreatesModel_ForTopLevelObjectIfThereIsExplicitPrefix(Type modelType, bool isPrefixProvided)
         {
             var mockValueProvider = new Mock<IValueProvider>();

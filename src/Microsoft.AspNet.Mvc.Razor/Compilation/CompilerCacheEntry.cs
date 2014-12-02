@@ -65,6 +65,12 @@ namespace Microsoft.AspNet.Mvc.Razor
         /// <summary>
         /// Gets a flag that indicates if the file is precompiled.
         /// </summary>
-        public bool IsPreCompiled { get { return Hash != null; } }
+        public bool IsPreCompiled
+        {
+            get
+            {
+                return Hash != null;
+            }
+        }
     }
 }

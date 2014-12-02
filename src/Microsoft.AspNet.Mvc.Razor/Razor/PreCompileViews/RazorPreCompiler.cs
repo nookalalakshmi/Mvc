@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNet.FileSystems;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.OptionsModel;
@@ -78,7 +77,7 @@ namespace Microsoft.AspNet.Mvc.Razor
         private IEnumerable<RelativeFileInfo> GetFileInfosRecursive(string currentPath)
         {
             IEnumerable<IFileInfo> fileInfos;
-            string path = currentPath;
+            var path = currentPath;
 
             if (!_fileSystem.TryGetDirectoryContents(path, out fileInfos))
             {
@@ -128,7 +127,8 @@ namespace Microsoft.AspNet.Mvc.Razor
 
                 if (generatedCode != null)
                 {
-                    var syntaxTree = SyntaxTreeGenerator.Generate(generatedCode, fileInfo.FileInfo.PhysicalPath, options);
+                    var syntaxTree =
+                        SyntaxTreeGenerator.Generate(generatedCode, fileInfo.FileInfo.PhysicalPath, options);
                     var fullTypeName = results.GetMainClassName(_host, syntaxTree);
 
                     if (fullTypeName != null)
@@ -151,18 +151,5 @@ namespace Microsoft.AspNet.Mvc.Razor
 
             return null;
         }
-    }
-}
-
-namespace Microsoft.Framework.Runtime
-{
-    [AssemblyNeutral]
-    public interface IBeforeCompileContext
-    {
-        CSharpCompilation CSharpCompilation { get; set; }
-
-        IList<ResourceDescription> Resources { get; }
-
-        IList<Diagnostic> Diagnostics { get; }
     }
 }

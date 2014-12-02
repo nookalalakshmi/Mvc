@@ -24,11 +24,12 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
         [Activate]
         protected internal IHtmlGenerator Generator { get; set; }
 
-        // TODO: https://github.com/aspnet/Razor/issues/196 Change to ValidationSummary enum once #196 has been completed.
         /// <summary>
         /// If <c>All</c> or <c>ModelOnly</c>, appends a validation summary. Acceptable values are defined by the
         /// <see cref="ValidationSummary"/> enum.
         /// </summary>
+        // TODO: https://github.com/aspnet/Razor/issues/196 Change to ValidationSummary enum once #196 has been
+        // completed.
         [HtmlAttributeName("validation-summary")]
         public string ValidationSummaryValue { get; set; }
 
