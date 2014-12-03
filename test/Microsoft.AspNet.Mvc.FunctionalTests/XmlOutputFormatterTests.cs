@@ -44,7 +44,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
                 "xmlns=\"http://schemas.datacontract.org/2004/07/FormatterWebSite\">" +
                 "<SampleInt>10</SampleInt></DummyClass>",
                 await response.Content.ReadAsStringAsync());
-            var logs = sink.Writes.Where(w => w.LoggerName.Equals("Microsoft.AspNet.Mvc.ObjectResult"));
+            var logs = sink.Writes.Where(w => string.Equals(w.LoggerName, "Microsoft.AspNet.Mvc.ObjectResult"));
             Assert.Single(logs);
             Assert.Equal(typeof(XmlDataContractSerializerOutputFormatter), 
                 ((ObjectResultValues)logs.First().State).SelectedFormatter.OutputFormatterType);
@@ -67,7 +67,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
             Assert.Equal("<DummyClass xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
                 "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><SampleInt>10</SampleInt></DummyClass>",
                 await response.Content.ReadAsStringAsync());
-            var logs = sink.Writes.Where(w => w.LoggerName.Equals("Microsoft.AspNet.Mvc.ObjectResult"));
+            var logs = sink.Writes.Where(w => string.Equals(w.LoggerName, "Microsoft.AspNet.Mvc.ObjectResult"));
             Assert.Single(logs);
             Assert.Equal(typeof(XmlSerializerOutputFormatter), 
                 ((ObjectResultValues)logs.First().State).SelectedFormatter.OutputFormatterType);
@@ -92,7 +92,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
                 "xmlns=\"http://schemas.datacontract.org/2004/07/FormatterWebSite\">" +
                 "<Name>HelloWorld</Name></Person>",
                 await response.Content.ReadAsStringAsync());
-            var logs = sink.Writes.Where(w => w.LoggerName.Equals("Microsoft.AspNet.Mvc.ObjectResult"));
+            var logs = sink.Writes.Where(w => string.Equals(w.LoggerName, "Microsoft.AspNet.Mvc.ObjectResult"));
             Assert.Single(logs);
             Assert.Equal(typeof(XmlDataContractSerializerOutputFormatter),
                 ((ObjectResultValues)logs.First().State).SelectedFormatter.OutputFormatterType);
@@ -117,7 +117,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
                 "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"DerivedDummyClass\">" +
                 "<SampleInt>10</SampleInt><SampleIntInDerived>50</SampleIntInDerived></DummyClass>",
                 await response.Content.ReadAsStringAsync());
-            var logs = sink.Writes.Where(w => w.LoggerName.Equals("Microsoft.AspNet.Mvc.ObjectResult"));
+            var logs = sink.Writes.Where(w => string.Equals(w.LoggerName, "Microsoft.AspNet.Mvc.ObjectResult"));
             Assert.Single(logs);
             Assert.Equal(typeof(XmlSerializerOutputFormatter),
                 ((ObjectResultValues)logs.First().State).SelectedFormatter.OutputFormatterType);
@@ -142,7 +142,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
                 "i:type=\"DerivedDummyClass\" xmlns=\"http://schemas.datacontract.org/2004/07/FormatterWebSite\"" +
                 "><SampleInt>10</SampleInt><SampleIntInDerived>50</SampleIntInDerived></DummyClass>",
                 await response.Content.ReadAsStringAsync());
-            var logs = sink.Writes.Where(w => w.LoggerName.Equals("Microsoft.AspNet.Mvc.ObjectResult"));
+            var logs = sink.Writes.Where(w => string.Equals(w.LoggerName, "Microsoft.AspNet.Mvc.ObjectResult"));
             Assert.Single(logs);
             Assert.Equal(typeof(XmlDataContractSerializerOutputFormatter), 
                 ((ObjectResultValues)logs.First().State).SelectedFormatter.OutputFormatterType);
@@ -163,7 +163,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 
             //Assert
             Assert.Equal(HttpStatusCode.NotAcceptable, response.StatusCode);
-            var logs = sink.Writes.Where(w => w.LoggerName.Equals("Microsoft.AspNet.Mvc.ObjectResult"));
+            var logs = sink.Writes.Where(w => string.Equals(w.LoggerName, "Microsoft.AspNet.Mvc.ObjectResult"));
             Assert.Single(logs);
             Assert.Equal(null, ((ObjectResultValues)logs.First().State).SelectedFormatter.OutputFormatterType);
         }

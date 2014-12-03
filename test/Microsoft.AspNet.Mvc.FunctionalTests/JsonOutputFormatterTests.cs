@@ -51,7 +51,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
             // Assert
             var actualBody = await response.Content.ReadAsStringAsync();
             Assert.Equal(expectedBody, actualBody);
-            var logs = sink.Writes.Where(w => w.LoggerName.Equals("Microsoft.AspNet.Mvc.ObjectResult"));
+            var logs = sink.Writes.Where(w => string.Equals(w.LoggerName, "Microsoft.AspNet.Mvc.ObjectResult"));
             Assert.Single(logs);
             Assert.Equal(typeof(JsonOutputFormatter), ((ObjectResultValues)logs.First().State).SelectedFormatter.OutputFormatterType);
         }
